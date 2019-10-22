@@ -46,9 +46,17 @@ func XOR(b1 *Buffer, b2 *Buffer) {
 }
 
 func (b *Buffer) ApplyQueue() {
+    var updated_queue []Animation
+
     for _, animation := range b.animation_queue {
-        b.applyAnimation(animation)
+        done := b.applyAnimation(animation)
+
+        if ( !done ) {
+            updated_queue = append(updated_queue, animation)
+        }
     }
+
+    b.animation_queue = updated_queue
 }
 
 func (b *Buffer) AddAnimation(a Animation, as ...Animation) {
@@ -59,7 +67,7 @@ func (b *Buffer) AddAnimation(a Animation, as ...Animation) {
     }
 }
 
-func (b *Buffer) applyAnimation(a Animation) {
+func (b *Buffer) applyAnimation(a Animation) (bool) {
     buffer_length_float64 := float64(b.length)
 
     start_index := math.Floor(buffer_length_float64*a.Start_pos)
@@ -69,6 +77,7 @@ func (b *Buffer) applyAnimation(a Animation) {
 
     // time since start in milliseconds
     since_start := float64(time.Since(a.Start).Milliseconds())
+    done := time.Now().After(a.Start.Add(a.Duration))
 
     time_length_multiplier := since_start / float64(a.Duration.Milliseconds())
 
@@ -78,4 +87,6 @@ func (b *Buffer) applyAnimation(a Animation) {
     for x := 0; x < int(curr_length); x++ {
         b.pixels[x+int(start_index)] = a.Start_colour
     }
+
+    return done
 }
