@@ -74,6 +74,9 @@ func (b *Buffer) applyAnimation(a Animation) (bool) {
 
     // determine how many pixels the animation covers at max
     max_pixels := math.Floor((buffer_length_float64-start_index)*a.Length)
+    if ( max_pixels == 0 ) {
+        return true
+    }
 
     // time since start in milliseconds
     since_start := float64(time.Since(a.Start).Milliseconds())
@@ -84,9 +87,21 @@ func (b *Buffer) applyAnimation(a Animation) (bool) {
     // length corrected for time
     curr_length := max_pixels * time_length_multiplier
 
+
     for x := 0; x < int(curr_length); x++ {
-        b.pixels[x+int(start_index)] = a.Start_colour
+        // multipler for gradient
+        m := float64(x) / max_pixels
+
+        b.pixels[x+int(start_index)] = Gradient(a.Start_colour, a.End_colour, m)
     }
 
     return done
+}
+
+func Gradient(a, b Color, m float64) (Color) {
+    R := float64(a.R) - math.Floor( (float64(a.R)-float64(b.R))*m )
+    G := float64(a.G) - math.Floor( (float64(a.G)-float64(b.G))*m )
+    B := float64(a.B) - math.Floor( (float64(a.B)-float64(b.B))*m )
+
+    return Color{uint8(R), uint8(G), uint8(B)}
 }
