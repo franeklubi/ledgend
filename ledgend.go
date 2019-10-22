@@ -2,6 +2,7 @@ package ledgend
 
 import (
     "time"
+    "math"
 )
 
 
@@ -11,7 +12,7 @@ type Color struct {
 
 type Animation struct {
     Direction                   bool
-    Length                      float32     // float between 0 and 1
+    Start_pos, Length           float64     // float between 0 and 1
     Start_colour, End_colour    Color
     Duration                    time.Duration
     Start                       time.Time
@@ -45,11 +46,36 @@ func XOR(b1 *Buffer, b2 *Buffer) {
 }
 
 func (b *Buffer) ApplyQueue() {
+    for _, animation := range b.animation_queue {
+        b.applyAnimation(animation)
+    }
 }
 
 func (b *Buffer) AddAnimation(a Animation, as ...Animation) {
     b.animation_queue = append(b.animation_queue, a)
-    for _, v := range as {
-        b.animation_queue = append(b.animation_queue, v)
+
+    for _, animation := range as {
+        b.animation_queue = append(b.animation_queue, animation)
+    }
+}
+
+func (b *Buffer) applyAnimation(a Animation) {
+    buffer_length_float64 := float64(b.length)
+
+    start_index := math.Floor(buffer_length_float64*a.Start_pos)
+
+    // determine how many pixels the animation covers at max
+    max_pixels := math.Floor((buffer_length_float64-start_index)*a.Length)
+
+    // time since start in milliseconds
+    since_start := float64(time.Since(a.Start).Milliseconds())
+
+    time_length_multiplier := since_start / float64(a.Duration.Milliseconds())
+
+    // length corrected for time
+    curr_length := max_pixels * time_length_multiplier
+
+    for x := 0; x < int(curr_length); x++ {
+        b.pixels[x+int(start_index)] = a.Start_colour
     }
 }
