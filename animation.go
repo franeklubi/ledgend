@@ -16,6 +16,7 @@ type Animation struct {
 }
 
 
+// applyAnimation renders an Animation on Buffer's pixels
 func (b *Buffer) applyAnimation(a Animation) (bool) {
     buffer_length_float64 := float64(b.length)
 

@@ -19,6 +19,7 @@ type Change struct {
 }
 
 
+// GenBuffer generates an empty buffer
 func GenBuffer(length uint16) (Buffer) {
     b := Buffer{}
     b.length = length
@@ -29,6 +30,7 @@ func GenBuffer(length uint16) (Buffer) {
 }
 
 
+// GetPixels copies and returns pixels data from Buffer
 func (b *Buffer) GetPixels() ([]Color) {
     copied_pixels := make([]Color, len(b.pixels))
     copy(copied_pixels, b.pixels)
@@ -37,6 +39,7 @@ func (b *Buffer) GetPixels() ([]Color) {
 }
 
 
+// XORPixels returns Changes between Color slices
 func XORPixels(p1 []Color, p2 []Color) ([]Change, error) {
     if ( len(p1) != len(p2) ) {
         return []Change{}, errors.New("Pixel slices must be the same length!")
@@ -53,11 +56,15 @@ func XORPixels(p1 []Color, p2 []Color) ([]Change, error) {
 }
 
 
+// GetAnimationQueue returns Buffer's animation queue
 func (b *Buffer) GetAnimationQueue() ([]Animation) {
     return b.animation_queue
 }
 
 
+// ApplyQueue applies every animation from Buffer's animation_queue in order
+//
+// If the animation is finished, it removes it from the animation_queue
 func (b *Buffer) ApplyQueue() {
     var updated_queue []Animation
 
@@ -73,6 +80,7 @@ func (b *Buffer) ApplyQueue() {
 }
 
 
+// AddAnimation adds an Animation to Buffer's animation queue
 func (b *Buffer) AddAnimation(a Animation, as ...Animation) {
     b.animation_queue = append(b.animation_queue, a)
 
