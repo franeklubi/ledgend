@@ -83,6 +83,9 @@ func (b *Buffer) applyAnimation(a Animation) (bool) {
     done := time.Now().After(a.Start.Add(a.Duration))
 
     time_length_multiplier := since_start / float64(a.Duration.Milliseconds())
+    if ( time_length_multiplier > 1 ) {
+        time_length_multiplier = 1
+    }
 
     // length corrected for time
     curr_length := max_pixels * time_length_multiplier
