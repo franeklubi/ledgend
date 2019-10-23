@@ -1,10 +1,21 @@
 package ledgend
 
 
+import (
+    "errors"
+)
+
+
 type Buffer struct {
     length          uint16
     pixels          []Color
     animation_queue []Animation
+}
+
+
+type Change struct {
+    Index   uint16
+    Pixel   Color
 }
 
 
@@ -19,11 +30,26 @@ func GenBuffer(length uint16) (Buffer) {
 
 
 func (b *Buffer) GetPixels() ([]Color) {
-    return b.pixels
+    copied_pixels := make([]Color, len(b.pixels))
+    copy(copied_pixels, b.pixels)
+
+    return copied_pixels
 }
 
 
-func XORPixels(b1 *Buffer, b2 *Buffer) {
+func XORPixels(p1 []Color, p2 []Color) ([]Change, error) {
+    if ( len(p1) != len(p2) ) {
+        return []Change{}, errors.New("Pixel slices must be the same length!")
+    }
+
+    var changes []Change
+    for index, pixel := range p2 {
+        if ( p1[index] != pixel ) {
+            changes = append(changes, Change{uint16(index), pixel})
+        }
+    }
+
+    return changes, nil
 }
 
 
