@@ -69,3 +69,46 @@ func Pulse(
 
     return a, b
 }
+
+
+func Strobo(
+    start_colour_a, end_colour_a Color,
+    start_colour_b, end_colour_b Color,
+    duration time.Duration,
+    interval time.Duration,
+) ([]Animation) {
+    passes := int(duration.Milliseconds()/interval.Milliseconds())
+
+    var (
+        anims           []Animation
+        blank           Color
+    )
+
+    if ( passes%2 != 0 ) {
+        passes++
+    }
+
+    strobe := Sweep(
+        true, 0, 1,
+        start_colour_a, end_colour_a,
+        time.Millisecond,
+    )
+
+    for x := 0; x < passes; x++ {
+
+        if ( x%2 == 0 ) {
+            g := float64(x)/float64(passes)
+            strobe.Start_colour = Gradient(start_colour_a, start_colour_b, g)
+            strobe.End_colour = Gradient(end_colour_a, end_colour_b, g)
+        } else {
+            strobe.Start_colour = blank
+            strobe.End_colour = blank
+        }
+
+        anims = append(anims, strobe)
+
+        strobe.Start = strobe.Start.Add(interval)
+    }
+
+    return anims
+}
