@@ -1,5 +1,7 @@
 # franeklubi/ledgend
 
+[![GoDoc](https://godoc.org/github.com/franeklubi/ledgend?status.svg)](https://godoc.org/github.com/franeklubi/ledgend)
+
 Welcome, You absolute ledgend!
 
 **ledgend** is a Go library aiming to provide a simple API for creating
