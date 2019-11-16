@@ -81,10 +81,6 @@ func (b *Buffer) ApplyQueue() {
 
 
 // AddAnimation adds an Animation to Buffer's animation queue
-func (b *Buffer) AddAnimation(a Animation, as ...Animation) {
-    b.animation_queue = append(b.animation_queue, a)
-
-    for _, animation := range as {
-        b.animation_queue = append(b.animation_queue, animation)
-    }
+func (b *Buffer) AddAnimation(a ...Animation) {
+    b.animation_queue = append(b.animation_queue, a...)
 }
