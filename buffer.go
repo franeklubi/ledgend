@@ -80,6 +80,12 @@ func (b *Buffer) ApplyQueue() {
 }
 
 
+// ClearQueue empties the buffer's animation_queue
+func (b *Buffer) ClearQueue() {
+    b.animation_queue = []Animation{}
+}
+
+
 // AddAnimation adds an Animation to Buffer's animation queue
 func (b *Buffer) AddAnimation(a ...Animation) {
     b.animation_queue = append(b.animation_queue, a...)
