@@ -11,12 +11,13 @@ func Sweep(
     start_pos, length float64,
     start_colour, end_colour Color,
     duration time.Duration,
+    start_time time.Time,
 ) (Animation) {
     return Animation{
         direction,
         start_pos, length,
         start_colour, end_colour,
-        duration, time.Now(),
+        duration, start_time,
     }
 }
 
@@ -24,12 +25,13 @@ func Sweep(
 func FromMiddleFullSweep(
     start_colour, end_colour Color,
     duration time.Duration,
+    start_time time.Time,
 ) (Animation, Animation) {
 
     a := Sweep(
         false, 0.5, 1,
         start_colour, end_colour,
-        duration,
+        duration, start_time,
     )
 
     b := a
@@ -42,14 +44,15 @@ func FromMiddleFullSweep(
 func Pulse(
     direction bool,
     start_pos, length float64,
-    start_colour_a, end_colour_a Color,
+    start_colour_a, end_colour_a,
     start_colour_b, end_colour_b Color,
     duration, duration_back time.Duration,
+    start_time time.Time,
 ) (Animation, Animation) {
     a := Sweep(
         direction, start_pos, length,
         start_colour_a, end_colour_a,
-        duration,
+        duration, start_time,
     )
 
 
@@ -63,7 +66,7 @@ func Pulse(
     b := Sweep(
         !direction, b_start_pos, b_length,
         start_colour_b, end_colour_b,
-        duration_back,
+        duration_back, start_time,
     )
     b.Start = b.Start.Add(duration)
 
@@ -72,10 +75,10 @@ func Pulse(
 
 
 func Strobo(
-    start_colour_a, end_colour_a Color,
+    start_colour_a, end_colour_a,
     start_colour_b, end_colour_b Color,
-    duration time.Duration,
-    interval time.Duration,
+    duration, interval time.Duration,
+    start_time time.Time,
 ) ([]Animation) {
     passes := int(duration.Milliseconds()/interval.Milliseconds())
 
@@ -91,7 +94,7 @@ func Strobo(
     strobe := Sweep(
         true, 0, 1,
         start_colour_a, end_colour_a,
-        time.Millisecond,
+        time.Millisecond, start_time,
     )
 
     for x := 0; x < passes; x++ {
