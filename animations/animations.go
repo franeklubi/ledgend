@@ -9,28 +9,28 @@ import (
 func Sweep(
     direction bool,
     start_pos, length float64,
-    start_colour, end_colour Color,
+    start_col, end_col Color,
     duration time.Duration,
     start_time time.Time,
 ) (Animation) {
     return Animation{
         direction,
         start_pos, length,
-        start_colour, end_colour,
+        start_col, end_col,
         duration, start_time,
     }
 }
 
 
 func FromMiddleFullSweep(
-    start_colour, end_colour Color,
+    start_col, end_col Color,
     duration time.Duration,
     start_time time.Time,
 ) (Animation, Animation) {
 
     a := Sweep(
         false, 0.5, 1,
-        start_colour, end_colour,
+        start_col, end_col,
         duration, start_time,
     )
 
@@ -44,14 +44,14 @@ func FromMiddleFullSweep(
 func Pulse(
     direction bool,
     start_pos, length float64,
-    start_colour_a, end_colour_a,
-    start_colour_b, end_colour_b Color,
+    start_col_a, end_col_a,
+    start_col_b, end_col_b Color,
     duration, duration_back time.Duration,
     start_time time.Time,
 ) (Animation, Animation) {
     a := Sweep(
         direction, start_pos, length,
-        start_colour_a, end_colour_a,
+        start_col_a, end_col_a,
         duration, start_time,
     )
 
@@ -65,7 +65,7 @@ func Pulse(
 
     b := Sweep(
         !direction, b_start_pos, b_length,
-        start_colour_b, end_colour_b,
+        start_col_b, end_col_b,
         duration_back, start_time,
     )
     b.Start = b.Start.Add(duration)
@@ -75,8 +75,8 @@ func Pulse(
 
 
 func Strobo(
-    start_colour_a, end_colour_a,
-    start_colour_b, end_colour_b Color,
+    start_col_a, end_col_a,
+    start_col_b, end_col_b Color,
     duration, interval time.Duration,
     start_time time.Time,
 ) ([]Animation) {
@@ -93,7 +93,7 @@ func Strobo(
 
     strobe := Sweep(
         true, 0, 1,
-        start_colour_a, end_colour_a,
+        start_col_a, end_col_a,
         time.Millisecond, start_time,
     )
 
@@ -101,11 +101,11 @@ func Strobo(
 
         if ( x%2 == 0 ) {
             g := float64(x)/float64(passes)
-            strobe.Start_colour = Gradient(start_colour_a, start_colour_b, g)
-            strobe.End_colour = Gradient(end_colour_a, end_colour_b, g)
+            strobe.Start_col = Gradient(start_col_a, start_col_b, g)
+            strobe.End_col = Gradient(end_col_a, end_col_b, g)
         } else {
-            strobe.Start_colour = blank
-            strobe.End_colour = blank
+            strobe.Start_col = blank
+            strobe.End_col = blank
         }
 
         anims = append(anims, strobe)

@@ -8,11 +8,11 @@ import (
 
 
 type Animation struct {
-    Direction                   bool
-    Start_pos, Length           float64     // float between 0 and 1
-    Start_colour, End_colour    Color
-    Duration                    time.Duration
-    Start                       time.Time
+    Direction           bool
+    Start_pos, Length   float64     // float between 0 and 1
+    Start_col, End_col  Color
+    Duration            time.Duration
+    Start               time.Time
 }
 
 
@@ -57,7 +57,7 @@ func (b *Buffer) applyAnimation(a Animation) (bool) {
             index_to_draw = int(start_index) - x - 1
         }
 
-        b.pixels[index_to_draw] = Gradient(a.Start_colour, a.End_colour, m)
+        b.pixels[index_to_draw] = Gradient(a.Start_col, a.End_col, m)
     }
 
     return done
