@@ -80,37 +80,21 @@ func Strobo(
     duration, interval time.Duration,
     start_time time.Time,
 ) ([]Animation) {
-    passes := int(duration.Milliseconds()/interval.Milliseconds())
+    var blank Color
 
-    var (
-        anims           []Animation
-        blank           Color
-    )
-
-    if ( passes%2 != 0 ) {
-        passes++
-    }
-
-    strobe := Sweep(
+    anims := GradientOverTime(
         true, 0, 1,
         start_col_a, end_col_a,
-        time.Millisecond, start_time,
+        start_col_b, end_col_b,
+        duration, interval,
+        start_time,
     )
 
-    for x := 0; x < passes; x++ {
-
-        if ( x%2 == 0 ) {
-            g := float64(x)/float64(passes)
-            strobe.Start_col = Gradient(start_col_a, start_col_b, g)
-            strobe.End_col = Gradient(end_col_a, end_col_b, g)
-        } else {
-            strobe.Start_col = blank
-            strobe.End_col = blank
+    for x, _ := range anims {
+        if ( x%2 == 1 ) {
+            anims[x].Start_col = blank
+            anims[x].End_col = blank
         }
-
-        anims = append(anims, strobe)
-
-        strobe.Start = strobe.Start.Add(interval)
     }
 
     return anims
@@ -144,4 +128,6 @@ func GradientOverTime(
 
         strobe.Start = strobe.Start.Add(interval)
     }
+
+    return anims
 }
